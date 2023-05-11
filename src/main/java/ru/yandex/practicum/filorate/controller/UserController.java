@@ -31,41 +31,37 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public ResponseEntity<?> create(@RequestBody User user) throws ValidationException {
+    public ResponseEntity<?> create(@RequestBody User user) {
 
         log.info("Получен запрос к эндпоинту create user");
 
-        if (validation(user)) {
-            user.setId(getNextID());
-            if (user.getName() == null || user.getName().isEmpty()) {
-                user.setName(user.getLogin());
-            }
-            users.put(user.getId(), user);
-            return new ResponseEntity<User>(user, HttpStatus.OK);
+        validation(user);
+        user.setId(getNextID());
+        if (user.getName() == null || user.getName().isEmpty()) {
+            user.setName(user.getLogin());
         }
+        users.put(user.getId(), user);
 
-        return new ResponseEntity<User>(user, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
 
     }
 
     @PutMapping(value = "/users")
-    public ResponseEntity<?> update(@RequestBody User user) throws ValidationException {
+    public ResponseEntity<?> update(@RequestBody User user) {
 
         int id = user.getId();
         User oldUser = users.get(id);
         if (oldUser != null) {
-            if (validation(user)) {
-                if (user.getName() == null || user.getName().isEmpty()) {
-                    oldUser.setName(user.getLogin());
-                } else {
-                    oldUser.setName(user.getName());
-                }
-                oldUser.setLogin(user.getLogin());
-                oldUser.setEmail(user.getEmail());
-                oldUser.setBirthday(user.getBirthday());
+            validation(user);
+            if (user.getName() == null || user.getName().isEmpty()) {
+                oldUser.setName(user.getLogin());
             } else {
-                return new ResponseEntity<User>(user, HttpStatus.BAD_REQUEST);
+                oldUser.setName(user.getName());
             }
+            oldUser.setLogin(user.getLogin());
+            oldUser.setEmail(user.getEmail());
+            oldUser.setBirthday(user.getBirthday());
+
         } else {
             return new ResponseEntity<User>(user, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -74,28 +70,20 @@ public class UserController {
 
     }
 
-    public Boolean validation(User user) throws ValidationException {
-
-        Boolean rez = true;
+    public void validation(User user) throws ValidationException {
 
         String email = user.getEmail();
         String login = user.getLogin();
 
-        try {
-            if (email.isEmpty() || !email.contains("@")) {
-                throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @");
-            }
-            if (login.isEmpty() || login.contains(" ")) {
-                throw new ValidationException("логин не может быть пустым и содержать пробелы");
-            }
-            if (user.getBirthday().after(Date.from(Instant.now()))) {
-                throw new ValidationException("дата рождения не может быть в будущем.");
-            }
-        } catch (ValidationException e) {
-            rez = false;
-            log.info(e.getMessage());
+        if (email.isEmpty() || !email.contains("@")) {
+            throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @", user, HttpStatus.BAD_REQUEST);
+        }
+        if (login.isEmpty() || login.contains(" ")) {
+            throw new ValidationException("логин не может быть пустым и содержать пробелы", user, HttpStatus.BAD_REQUEST);
+        }
+        if (user.getBirthday().after(Date.from(Instant.now()))) {
+            throw new ValidationException("дата рождения не может быть в будущем.", user, HttpStatus.BAD_REQUEST);
         }
 
-        return rez;
     }
 }

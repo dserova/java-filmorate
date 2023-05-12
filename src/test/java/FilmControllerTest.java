@@ -25,7 +25,7 @@ public class FilmControllerTest {
         }
 
         film = new Film(1, "name", "description", Date.from(Instant.now()), 20);
-        assertEquals(filmController.create(film), new ResponseEntity<Film>(film, HttpStatus.OK));
+        assertEquals(filmController.create(film), film);
 
         thrown = assertThrows(ValidationException.class, () -> {
             filmController.create(new Film(1, "", "description", new Date(2000, 1, 1), 20));
@@ -47,10 +47,10 @@ public class FilmControllerTest {
         assertEquals(thrown.getMessage(), "дата релиза — не раньше 28 декабря 1895 года");
 
         film = new Film(1, "name", "description", new Date(-5, 12, 28), 20);
-        assertEquals(filmController.create(film), new ResponseEntity<Film>(film, HttpStatus.OK));
+        assertEquals(filmController.create(film), film);
 
         film = new Film(1, "name", "description", new Date(100, 12, 28), 20);
-        assertEquals(filmController.create(film), new ResponseEntity<Film>(film, HttpStatus.OK));
+        assertEquals(filmController.create(film), film);
 
         thrown = assertThrows(ValidationException.class, () -> {
             filmController.create(new Film(1, "name", "description", new Date(2000, 1, 1), -20));
@@ -59,7 +59,7 @@ public class FilmControllerTest {
         assertEquals(thrown.getMessage(), "продолжительность фильма должна быть положительной");
 
         film = new Film(1, "name", "description", new Date(2000, 1, 1), 0);
-        assertEquals(filmController.create(film), new ResponseEntity<Film>(film, HttpStatus.OK));
+        assertEquals(filmController.create(film), film);
 
     }
 

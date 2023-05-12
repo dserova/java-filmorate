@@ -44,10 +44,10 @@ public class UserControllerTest {
         assertEquals(thrown.getMessage(), "логин не может быть пустым и содержать пробелы");
 
         user = new User(1, "email@ru", "login", "name", new Date(50, 1, 1));
-        assertEquals(userController.create(user), new ResponseEntity<User>(user, HttpStatus.OK));
+        assertEquals(userController.create(user), user);
 
         user = new User(1, "email@ru", "login", "name", new Date(50, 1, 1));
-        assertEquals(userController.create(user), new ResponseEntity<User>(user, HttpStatus.OK));
+        assertEquals(userController.create(user), user);
 
         thrown = assertThrows(ValidationException.class, () -> {
             userController.create(new User(1, "email@ru", "login", "name", new Date(2000, 1, 1)));

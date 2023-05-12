@@ -10,8 +10,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler
-    public ResponseEntity<?> catchResourceNotFoundException(ValidationException e) {
+    public ResponseEntity<?> catchValidationException(ValidationException e) {
         log.info(e.getMessage());
         return new ResponseEntity<>(e.getObject(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> catchResourceNotFoundException(DataNotFound e) {
+        log.info(e.getMessage());
+        return new ResponseEntity<>(e.getObject(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

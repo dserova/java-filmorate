@@ -2,8 +2,8 @@ package ru.yandex.practicum.filorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.User;
 
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public ResponseEntity<?> create(@RequestBody User user) {
+    public User create(@RequestBody User user) {
 
         log.info("Получен запрос к эндпоинту create user");
 
@@ -42,31 +42,29 @@ public class UserController {
         }
         users.put(user.getId(), user);
 
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+        return user;
 
     }
 
     @PutMapping(value = "/users")
-    public ResponseEntity<?> update(@RequestBody User user) {
+    public User update(@RequestBody User user) {
 
         int id = user.getId();
         User oldUser = users.get(id);
-        if (oldUser != null) {
-            validation(user);
-            if (user.getName() == null || user.getName().isEmpty()) {
-                oldUser.setName(user.getLogin());
-            } else {
-                oldUser.setName(user.getName());
-            }
-            oldUser.setLogin(user.getLogin());
-            oldUser.setEmail(user.getEmail());
-            oldUser.setBirthday(user.getBirthday());
 
+        userNotFound(oldUser, user);
+        validation(user);
+
+        if (user.getName() == null || user.getName().isEmpty()) {
+            oldUser.setName(user.getLogin());
         } else {
-            return new ResponseEntity<User>(user, HttpStatus.INTERNAL_SERVER_ERROR);
+            oldUser.setName(user.getName());
         }
+        oldUser.setLogin(user.getLogin());
+        oldUser.setEmail(user.getEmail());
+        oldUser.setBirthday(user.getBirthday());
 
-        return new ResponseEntity<User>(user, HttpStatus.OK);
+        return oldUser;
 
     }
 
@@ -86,4 +84,11 @@ public class UserController {
         }
 
     }
+
+    public void userNotFound(User oldUser, User user) throws DataNotFound {
+        if (oldUser == null) {
+            throw new DataNotFound("Пользователь не найден", user);
+        }
+    }
+
 }

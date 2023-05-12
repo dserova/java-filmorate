@@ -2,8 +2,8 @@ package ru.yandex.practicum.filorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.Film;
 
@@ -29,35 +29,34 @@ public class FilmController {
     }
 
     @PostMapping(value = "/films")
-    public ResponseEntity<?> create(@RequestBody Film film) {
+    public Film create(@RequestBody Film film) {
 
         log.info("Получен запрос к эндпоинту create film");
 
         validation(film);
         film.setId(getNextID());
         films.put(film.getId(), film);
-        return new ResponseEntity<Film>(film, HttpStatus.OK);
+        return film;
 
     }
 
     @PutMapping(value = "/films")
-    public ResponseEntity<?> update(@RequestBody Film film) {
+    public Film update(@RequestBody Film film) {
 
         int id = film.getId();
         Film oldFilm = films.get(id);
-        if (oldFilm != null) {
-            validation(film);
-            oldFilm.setName(film.getName());
-            oldFilm.setDuration(film.getDuration());
-            oldFilm.setDescription(film.getDescription());
-            oldFilm.setReleaseDate(film.getReleaseDate());
-        } else {
-            return new ResponseEntity<Film>(film, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
-        return new ResponseEntity<Film>(film, HttpStatus.OK);
+        filmNotFound(oldFilm, film);
+        validation(film);
+
+        oldFilm.setName(film.getName());
+        oldFilm.setDuration(film.getDuration());
+        oldFilm.setDescription(film.getDescription());
+        oldFilm.setReleaseDate(film.getReleaseDate());
+
+        return oldFilm;
+
     }
-
 
     public void validation(Film film) throws ValidationException {
 
@@ -74,6 +73,12 @@ public class FilmController {
             throw new ValidationException("продолжительность фильма должна быть положительной", film, HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    public void filmNotFound(Film oldFilm, Film film) throws DataNotFound {
+        if (oldFilm == null) {
+            throw new DataNotFound("Фильм не найден", film);
+        }
     }
 
 }

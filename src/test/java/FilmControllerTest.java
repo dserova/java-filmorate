@@ -1,6 +1,4 @@
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import ru.yandex.practicum.filorate.controller.FilmController;
 import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.Film;

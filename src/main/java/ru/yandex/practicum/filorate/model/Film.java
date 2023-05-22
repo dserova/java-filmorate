@@ -16,11 +16,20 @@ public class Film {
     private String description;
     private Date releaseDate;
     private int duration;
+    private Integer rate;
 
     @JsonGetter("releaseDate")
     public String getCustomData() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(releaseDate);
+    }
+
+    public void addLike() {
+        rate++;
+    }
+
+    public void deleteLike() {
+        rate--;
     }
 
 }

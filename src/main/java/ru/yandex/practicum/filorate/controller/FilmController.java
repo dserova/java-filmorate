@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filorate.model.Film;
@@ -11,14 +12,10 @@ import java.util.Optional;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class FilmController {
     private final FilmStorage inMemoryFilmStorage;
     private final FilmService filmService;
-
-    public FilmController(FilmService filmService) {
-        this.inMemoryFilmStorage = filmService.filmStorage;
-        this.filmService = filmService;
-    }
 
     @GetMapping("/films")
     public List<Film> findAll() {
@@ -36,7 +33,6 @@ public class FilmController {
         return inMemoryFilmStorage.update(film);
     }
 
-    //@GetMapping(value = {"/films/popular", "/films/popular/{n}"})
     @GetMapping(value = "/films/popular")
     public List<Film> getPopular(@RequestParam(defaultValue = "10") Optional<Integer> count) {
         int size = count.get();

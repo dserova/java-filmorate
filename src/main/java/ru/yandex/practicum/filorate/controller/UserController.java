@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filorate.model.User;
@@ -10,14 +11,10 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
     private final UserStorage inMemoryUserStorage;
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-        this.inMemoryUserStorage = userService.userStorage;
-    }
 
     @GetMapping("/users")
     public List<User> findAll() {
@@ -25,7 +22,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{Id}")
-    public User findPost(@PathVariable("Id") Integer id) {
+    public User findUser(@PathVariable("Id") Integer id) {
         return inMemoryUserStorage.findById(id);
     }
 

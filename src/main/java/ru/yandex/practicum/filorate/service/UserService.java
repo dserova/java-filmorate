@@ -40,9 +40,9 @@ public class UserService {
 
     public List<User> getAllFriends(int id) {
         User user = userStorage.findById(id);
-        Set<Integer> iDFriends = user.getFriends();
+        Set<Integer> idFriends = user.getFriends();
         List<User> userFriends = new ArrayList<>();
-        for (Integer n : iDFriends) {
+        for (Integer n : idFriends) {
             userFriends.add(userStorage.findById(n));
         }
         return userFriends;

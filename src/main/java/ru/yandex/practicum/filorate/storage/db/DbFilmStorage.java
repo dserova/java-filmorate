@@ -196,14 +196,14 @@ public class DbFilmStorage implements FilmStorage {
 
     void setGenre(Film film) {
 
-        int film_id = film.getId();
+        int filmId = film.getId();
         List<Genre> genres = (List<Genre>) film.getGenres();
 
         String sqlDelete = "DELETE FROM public.FILM_GENRES WHERE film_film_id = ? ";
-        jdbcTemplate.update(sqlDelete, film_id);
+        jdbcTemplate.update(sqlDelete, filmId);
 
         if (genres == null || genres.size() == 0) {
-            film.setGenres(getGenres(film_id));
+            film.setGenres(getGenres(filmId));
             return;
         }
 
@@ -214,14 +214,14 @@ public class DbFilmStorage implements FilmStorage {
             jdbcTemplate.update(
                     connection -> {
                         PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-                        stmt.setInt(1, film_id);
+                        stmt.setInt(1, filmId);
                         stmt.setInt(2, genre.getId());
                         return stmt;
                     }
             );
         }
 
-        film.setGenres(getGenres(film_id));
+        film.setGenres(getGenres(filmId));
 
     }
 

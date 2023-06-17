@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filorate.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filorate.model.Film;
 import ru.yandex.practicum.filorate.service.FilmService;
@@ -12,36 +12,40 @@ import java.util.Optional;
 
 @RestController
 @Slf4j
-@RequiredArgsConstructor
 public class FilmController {
-    private final FilmStorage inMemoryFilmStorage;
+    private final FilmStorage filmStorage;
     private final FilmService filmService;
+
+    public FilmController(FilmStorage inMemoryFilmStorage, @Qualifier("dbFilmService") FilmService filmService) {
+        this.filmStorage = inMemoryFilmStorage;
+        this.filmService = filmService;
+    }
 
     @GetMapping("/films")
     public List<Film> findAll() {
-        return inMemoryFilmStorage.findAll();
+        return filmStorage.findAll();
     }
 
     @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) {
         log.info("Получен запрос к эндпоинту create film");
-        return inMemoryFilmStorage.create(film);
+        return filmStorage.create(film);
     }
 
     @PutMapping(value = "/films")
     public Film update(@RequestBody Film film) {
-        return inMemoryFilmStorage.update(film);
+        return filmStorage.update(film);
     }
 
     @GetMapping(value = "/films/popular")
     public List<Film> getPopular(@RequestParam(defaultValue = "10") Optional<Integer> count) {
         int size = count.get();
-        return inMemoryFilmStorage.getPopular(size);
+        return filmStorage.getPopular(size);
     }
 
     @GetMapping("/films/{Id}")
     public Film findFilm(@PathVariable("Id") Integer id) {
-        return inMemoryFilmStorage.findById(id);
+        return filmStorage.findById(id);
     }
 
     @PutMapping("/films/{id}/like/{userId}")

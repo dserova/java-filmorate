@@ -1,10 +1,11 @@
-package ru.yandex.practicum.filorate.storage;
+package ru.yandex.practicum.filorate.storage.inMemory;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.User;
+import ru.yandex.practicum.filorate.storage.UserStorage;
 
 import java.time.Instant;
 import java.util.*;

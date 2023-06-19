@@ -19,9 +19,9 @@ public class InMemoryFilmService implements FilmService {
     public UserStorage userStorage;
 
     @Autowired
-    public InMemoryFilmService(FilmStorage filmStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
+    public InMemoryFilmService(FilmStorage inMemoryFilmStorage, UserStorage inMemoryUserStorage) {
+        this.filmStorage = inMemoryFilmStorage;
+        this.userStorage = inMemoryUserStorage;
     }
 
     public void addLike(Integer id, Integer userId) {

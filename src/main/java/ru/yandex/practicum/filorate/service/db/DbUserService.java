@@ -2,7 +2,7 @@ package ru.yandex.practicum.filorate.service.db;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filorate.model.User;
 import ru.yandex.practicum.filorate.service.UserService;
 import ru.yandex.practicum.filorate.storage.db.DbUserStorage;
@@ -14,7 +14,7 @@ import java.util.List;
  * добавление в друзья, удаление из друзей, вывод списка общих друзей.
  */
 
-@Repository
+@Service
 public class DbUserService implements UserService {
 
     private final JdbcTemplate jdbcTemplate;

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filorate.model.Film;
 import ru.yandex.practicum.filorate.service.FilmService;
@@ -16,9 +15,9 @@ public class FilmController {
     private final FilmStorage filmStorage;
     private final FilmService filmService;
 
-    public FilmController(FilmStorage inMemoryFilmStorage, @Qualifier("dbFilmService") FilmService filmService) {
-        this.filmStorage = inMemoryFilmStorage;
-        this.filmService = filmService;
+    public FilmController(FilmStorage dbFilmStorage, FilmService dbFilmService) {
+        this.filmStorage = dbFilmStorage;
+        this.filmService = dbFilmService;
     }
 
     @GetMapping("/films")

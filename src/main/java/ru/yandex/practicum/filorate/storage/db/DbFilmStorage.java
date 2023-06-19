@@ -1,11 +1,10 @@
 package ru.yandex.practicum.filorate.storage.db;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.AgeRatingSystem;
@@ -24,16 +23,15 @@ import java.util.List;
  * добавления и модификации объектов
  */
 
-@Primary
-@Component("DbFilmStorage")
+@Repository
 public class DbFilmStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final DbUtilityStorage dbUtilityStorage;
+    private final DbGenreStorage dbGenreStorage;
 
-    public DbFilmStorage(JdbcTemplate jdbcTemplate, DbUtilityStorage dbUtilityStorage) {
+    public DbFilmStorage(JdbcTemplate jdbcTemplate, DbGenreStorage dbGenreStorage) {
         this.jdbcTemplate = jdbcTemplate;
-        this.dbUtilityStorage = dbUtilityStorage;
+        this.dbGenreStorage = dbGenreStorage;
     }
 
     @Override
@@ -232,7 +230,7 @@ public class DbFilmStorage implements FilmStorage {
                 "INNER JOIN\n" +
                 "public.FILM_GENRES AS fgs ON fgs.genres_genre_id = g.genre_id  AND fgs.film_film_id = ?";
 
-        List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> dbUtilityStorage.makeGenre(rs, 0), film_id);
+        List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> DbGenreStorage.makeGenre(rs, 0), film_id);
 
         return genres;
     }

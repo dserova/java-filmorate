@@ -1,11 +1,10 @@
-package ru.yandex.practicum.filorate.service.db;
+package ru.yandex.practicum.filorate.dao.db;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filorate.model.Film;
-import ru.yandex.practicum.filorate.service.FilmService;
-import ru.yandex.practicum.filorate.storage.db.DbFilmStorage;
-import ru.yandex.practicum.filorate.storage.db.DbUserStorage;
+import ru.yandex.practicum.filorate.dao.FilmLikeDao;
 
 import java.sql.PreparedStatement;
 
@@ -14,23 +13,24 @@ import java.sql.PreparedStatement;
  */
 
 @Repository
-public class DbFilmService implements FilmService {
+@Component("dbFilmLikeDao")
+public class DbFilmLikeDao implements FilmLikeDao {
 
     private final JdbcTemplate jdbcTemplate;
-    public DbFilmStorage dbFilmStorage;
-    public DbUserStorage dbUserStorage;
+    public DbFilmDao dbFilmDao;
+    public DbUserDao dbUserDao;
 
-    public DbFilmService(JdbcTemplate jdbcTemplate, DbFilmStorage dbFilmStorage, DbUserStorage dbUserStorage) {
+    public DbFilmLikeDao(JdbcTemplate jdbcTemplate, DbFilmDao dbFilmDao, DbUserDao dbUserDao) {
         this.jdbcTemplate = jdbcTemplate;
-        this.dbFilmStorage = dbFilmStorage;
-        this.dbUserStorage = dbUserStorage;
+        this.dbFilmDao = dbFilmDao;
+        this.dbUserDao = dbUserDao;
     }
 
     @Override
     public void addLike(Integer filmId, Integer userId) {
 
-        Film film = dbFilmStorage.findById(filmId);
-        dbUserStorage.findById(userId);
+        Film film = dbFilmDao.findById(filmId);
+        dbUserDao.findById(userId);
 
         int rate;
         if (film.getRate() == null) {
@@ -63,8 +63,8 @@ public class DbFilmService implements FilmService {
     @Override
     public void deleteLike(Integer filmId, Integer userId) {
 
-        Film film = dbFilmStorage.findById(filmId);
-        dbUserStorage.findById(userId);
+        Film film = dbFilmDao.findById(filmId);
+        dbUserDao.findById(userId);
 
         int rate;
         if (film.getRate() == null || film.getRate() == 0) {

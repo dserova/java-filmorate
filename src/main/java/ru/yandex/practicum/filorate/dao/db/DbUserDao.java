@@ -1,15 +1,15 @@
-package ru.yandex.practicum.filorate.storage.db;
+package ru.yandex.practicum.filorate.dao.db;
 
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filorate.dao.UserDao;
 import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.User;
-import ru.yandex.practicum.filorate.storage.UserStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,13 +19,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
-@Primary
-@Component("UserDbStorage")
-public class DbUserStorage implements UserStorage {
+@Component("dbUserDao")
+@Repository
+public class DbUserDao implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public DbUserStorage(JdbcTemplate jdbcTemplate) {
+    public DbUserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -84,14 +84,14 @@ public class DbUserStorage implements UserStorage {
 
     @Override
     public List<User> findAll() {
-        return jdbcTemplate.query("SELECT * FROM public.USER", DbUserStorage::makeUser);
+        return jdbcTemplate.query("SELECT * FROM public.USER", DbUserDao::makeUser);
     }
 
     @Override
     public User findById(Integer id) {
 
         final String sqlQuery = "SELECT * FROM public.USER WHERE user_id = ?";
-        final List<User> users = jdbcTemplate.query(sqlQuery, DbUserStorage::makeUser, id);
+        final List<User> users = jdbcTemplate.query(sqlQuery, DbUserDao::makeUser, id);
 
         if (users.isEmpty()) {
             throw new DataNotFound("Has error response", null);

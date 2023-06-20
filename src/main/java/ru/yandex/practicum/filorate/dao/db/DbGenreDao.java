@@ -1,7 +1,8 @@
-package ru.yandex.practicum.filorate.storage.db;
+package ru.yandex.practicum.filorate.dao.db;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.model.Genre;
 
@@ -10,18 +11,19 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component("dbGenreStorage")
-public class DbGenreStorage {
+@Repository
+public class DbGenreDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public DbGenreStorage(JdbcTemplate jdbcTemplate) {
+    public DbGenreDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Genre> findAllGenres() {
 
         final String sqlQuery = "SELECT * FROM public.GENRE";
-        List<Genre> genres = jdbcTemplate.query(sqlQuery, DbGenreStorage::makeGenre);
+        List<Genre> genres = jdbcTemplate.query(sqlQuery, DbGenreDao::makeGenre);
         return genres;
 
     }
@@ -30,7 +32,7 @@ public class DbGenreStorage {
 
         final String sqlQuery = "SELECT * FROM public.GENRE AS g WHERE g.genre_id = ?";
 
-        final List<Genre> genres = jdbcTemplate.query(sqlQuery, DbGenreStorage::makeGenre, id);
+        final List<Genre> genres = jdbcTemplate.query(sqlQuery, DbGenreDao::makeGenre, id);
 
         if (genres.isEmpty()) {
             throw new DataNotFound("Has error response", null);

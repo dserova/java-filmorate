@@ -1,7 +1,8 @@
-package ru.yandex.practicum.filorate.storage.db;
+package ru.yandex.practicum.filorate.dao.db;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.model.AgeRatingSystem;
 
@@ -10,17 +11,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component("dbMpaStorage")
-public class DbMpaStorage {
+@Repository
+public class DbMpaDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public DbMpaStorage(JdbcTemplate jdbcTemplate) {
+    public DbMpaDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<AgeRatingSystem> findAllMpa() {
 
         final String sqlQuery = "SELECT * FROM public.age_rating_system";
-        List<AgeRatingSystem> mpa = jdbcTemplate.query(sqlQuery, DbMpaStorage::makeMpa);
+        List<AgeRatingSystem> mpa = jdbcTemplate.query(sqlQuery, DbMpaDao::makeMpa);
         return mpa;
 
     }
@@ -29,7 +31,7 @@ public class DbMpaStorage {
 
         final String sqlQuery = "SELECT * FROM public.age_rating_system AS age WHERE age.ars_id = ?";
 
-        final List<AgeRatingSystem> mpa = jdbcTemplate.query(sqlQuery, DbMpaStorage::makeMpa, id);
+        final List<AgeRatingSystem> mpa = jdbcTemplate.query(sqlQuery, DbMpaDao::makeMpa, id);
 
         if (mpa.isEmpty()) {
             throw new DataNotFound("Has error response", null);

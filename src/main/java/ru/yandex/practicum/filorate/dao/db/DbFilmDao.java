@@ -1,16 +1,17 @@
-package ru.yandex.practicum.filorate.storage.db;
+package ru.yandex.practicum.filorate.dao.db;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filorate.exception.DataNotFound;
 import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.AgeRatingSystem;
 import ru.yandex.practicum.filorate.model.Film;
 import ru.yandex.practicum.filorate.model.Genre;
-import ru.yandex.practicum.filorate.storage.FilmStorage;
+import ru.yandex.practicum.filorate.dao.FilmDao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,14 +25,15 @@ import java.util.List;
  */
 
 @Repository
-public class DbFilmStorage implements FilmStorage {
+@Component("dbFilmDao")
+public class DbFilmDao implements FilmDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final DbGenreStorage dbGenreStorage;
+    private final DbGenreDao dbGenreDao;
 
-    public DbFilmStorage(JdbcTemplate jdbcTemplate, DbGenreStorage dbGenreStorage) {
+    public DbFilmDao(JdbcTemplate jdbcTemplate, DbGenreDao dbGenreDao) {
         this.jdbcTemplate = jdbcTemplate;
-        this.dbGenreStorage = dbGenreStorage;
+        this.dbGenreDao = dbGenreDao;
     }
 
     @Override
@@ -100,7 +102,7 @@ public class DbFilmStorage implements FilmStorage {
                 "INNER JOIN\n" +
                 "public.age_rating_system AS ars ON ars.ars_id= films.mpa_ars_id";
 
-        List<Film> films = jdbcTemplate.query(sqlQuery, DbFilmStorage::makeFilm);
+        List<Film> films = jdbcTemplate.query(sqlQuery, DbFilmDao::makeFilm);
 
         if (films != null && films.size() != 0) {
             for (Film film : films) {
@@ -123,7 +125,7 @@ public class DbFilmStorage implements FilmStorage {
                 "WHERE films.film_id = ?";
 
 
-        final List<Film> films = jdbcTemplate.query(sqlQuery, DbFilmStorage::makeFilm, id);
+        final List<Film> films = jdbcTemplate.query(sqlQuery, DbFilmDao::makeFilm, id);
 
         if (films.isEmpty()) {
             throw new DataNotFound("Has error response", null);
@@ -150,7 +152,7 @@ public class DbFilmStorage implements FilmStorage {
                 "ORDER BY films.rate DESC\n" +
                 "LIMIT ?";
 
-        List<Film> films = jdbcTemplate.query(sqlQuery, DbFilmStorage::makeFilm, n);
+        List<Film> films = jdbcTemplate.query(sqlQuery, DbFilmDao::makeFilm, n);
 
         if (films != null && films.size() != 0) {
             for (Film film : films) {
@@ -230,7 +232,7 @@ public class DbFilmStorage implements FilmStorage {
                 "INNER JOIN\n" +
                 "public.FILM_GENRES AS fgs ON fgs.genres_genre_id = g.genre_id  AND fgs.film_film_id = ?";
 
-        List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> DbGenreStorage.makeGenre(rs, 0), film_id);
+        List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> DbGenreDao.makeGenre(rs, 0), film_id);
 
         return genres;
     }

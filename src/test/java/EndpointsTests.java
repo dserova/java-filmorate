@@ -15,7 +15,7 @@ import ru.yandex.practicum.filorate.exception.ValidationException;
 import ru.yandex.practicum.filorate.model.AgeRatingSystem;
 import ru.yandex.practicum.filorate.model.Film;
 import ru.yandex.practicum.filorate.model.User;
-import ru.yandex.practicum.filorate.storage.db.DbUserStorage;
+import ru.yandex.practicum.filorate.dao.db.DbUserDao;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -112,7 +112,7 @@ public class EndpointsTests {
         Assertions.assertThat(testFilms)
                 .hasToString("Film(id=1, name=Film Updated, description=New film update decription, releaseDate=1989-04-17, duration=190, rate=4, genres=[], mpa=AgeRatingSystem(id=0, name=))Film(id=2, name=New film, description=New film about friends, releaseDate=1999-04-30, duration=120, rate=0, genres=[], mpa=AgeRatingSystem(id=0, name=))");
 
-        List<User> users = jdbcTemplate.query(sqlQueryAllUsers, DbUserStorage::makeUser);
+        List<User> users = jdbcTemplate.query(sqlQueryAllUsers, DbUserDao::makeUser);
         System.out.println("------------USERS in DB--------------");
         StringBuilder testUsers = new StringBuilder();
         for (User user : users) {

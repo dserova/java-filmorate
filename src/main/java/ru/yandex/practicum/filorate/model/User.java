@@ -17,7 +17,6 @@ public class User {
     private String login;
     public String name;
     private Date birthday;
-
     private Set<Integer> friends;
     private Set<Integer> filmsLikes;
 

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filorate.model.Film;
 import ru.yandex.practicum.filorate.service.FilmService;
-import ru.yandex.practicum.filorate.storage.FilmStorage;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,34 +13,34 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class FilmController {
-    private final FilmStorage inMemoryFilmStorage;
+
     private final FilmService filmService;
 
     @GetMapping("/films")
     public List<Film> findAll() {
-        return inMemoryFilmStorage.findAll();
+        return filmService.findAll();
     }
 
     @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) {
         log.info("Получен запрос к эндпоинту create film");
-        return inMemoryFilmStorage.create(film);
+        return filmService.create(film);
     }
 
     @PutMapping(value = "/films")
     public Film update(@RequestBody Film film) {
-        return inMemoryFilmStorage.update(film);
+        return filmService.update(film);
     }
 
     @GetMapping(value = "/films/popular")
     public List<Film> getPopular(@RequestParam(defaultValue = "10") Optional<Integer> count) {
         int size = count.get();
-        return inMemoryFilmStorage.getPopular(size);
+        return filmService.getPopular(size);
     }
 
     @GetMapping("/films/{Id}")
     public Film findFilm(@PathVariable("Id") Integer id) {
-        return inMemoryFilmStorage.findById(id);
+        return filmService.findById(id);
     }
 
     @PutMapping("/films/{id}/like/{userId}")

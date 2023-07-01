@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filorate.storage;
+package ru.yandex.practicum.filorate.dao;
 
 import ru.yandex.practicum.filorate.model.User;
 
 import java.util.List;
 
-public interface UserStorage {
+public interface UserDao {
 
     User create(User user);
 

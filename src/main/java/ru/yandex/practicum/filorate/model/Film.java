@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +18,10 @@ public class Film {
     private Date releaseDate;
     private int duration;
     private Integer rate;
+
+    private List<Genre> genres;
+
+    private AgeRatingSystem mpa;
 
     @JsonGetter("releaseDate")
     public String getCustomData() {

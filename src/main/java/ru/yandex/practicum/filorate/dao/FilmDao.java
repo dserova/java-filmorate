@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filorate.storage;
+package ru.yandex.practicum.filorate.dao;
 
 import ru.yandex.practicum.filorate.model.Film;
 
 import java.util.List;
 
-public interface FilmStorage {
+public interface FilmDao {
 
     Film create(Film film);
 

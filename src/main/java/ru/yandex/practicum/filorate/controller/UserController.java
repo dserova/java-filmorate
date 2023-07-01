@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filorate.model.User;
 import ru.yandex.practicum.filorate.service.UserService;
-import ru.yandex.practicum.filorate.storage.UserStorage;
 
 import java.util.List;
 
@@ -13,28 +12,29 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
-    private final UserStorage inMemoryUserStorage;
+
     private final UserService userService;
+
 
     @GetMapping("/users")
     public List<User> findAll() {
-        return inMemoryUserStorage.findAll();
+        return userService.findAll();
     }
 
     @GetMapping("/users/{Id}")
     public User findUser(@PathVariable("Id") Integer id) {
-        return inMemoryUserStorage.findById(id);
+        return userService.findById(id);
     }
 
     @PostMapping(value = "/users")
     public User create(@RequestBody User user) {
         log.info("Получен запрос к эндпоинту create user");
-        return inMemoryUserStorage.create(user);
+        return userService.create(user);
     }
 
     @PutMapping(value = "/users")
     public User update(@RequestBody User user) {
-        return inMemoryUserStorage.update(user);
+        return userService.update(user);
     }
 
     @PutMapping("/users/{Id}/friends/{id2}")
@@ -56,6 +56,5 @@ public class UserController {
     public List<User> getCommonFriends(@PathVariable("Id") Integer id1, @PathVariable("id2") Integer id2) {
         return userService.getCommonFriends(id1, id2);
     }
-
 
 }

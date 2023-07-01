@@ -1,50 +1,45 @@
 package ru.yandex.practicum.filorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filorate.dao.FilmDao;
+import ru.yandex.practicum.filorate.dao.FilmLikeDao;
 import ru.yandex.practicum.filorate.model.Film;
-import ru.yandex.practicum.filorate.model.User;
-import ru.yandex.practicum.filorate.storage.FilmStorage;
-import ru.yandex.practicum.filorate.storage.UserStorage;
 
-/**
- * добавить, удалить лайк.
- */
+import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class FilmService {
+    private final FilmDao filmDao;
+    private final FilmLikeDao filmLikeDao;
 
-    public FilmStorage filmStorage;
-    public UserStorage userStorage;
-
-    @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
+    public Film create(Film film) {
+        return filmDao.create(film);
     }
 
-    public void addLike(Integer id, Integer userId) {
-
-        User user = userStorage.findById(userId);
-        Film film = filmStorage.findById(id);
-
-        if (!user.getFilmsLikes().contains(id)) {
-            user.addLike(id);
-            film.addLike();
-        }
-
+    public Film update(Film film) {
+        return filmDao.update(film);
     }
 
-    public void deleteLike(Integer id, Integer userId) {
+    public List<Film> findAll() {
+        return filmDao.findAll();
+    }
 
-        User user = userStorage.findById(userId);
-        Film film = filmStorage.findById(id);
+    public Film findById(Integer id) {
+        return filmDao.findById(id);
+    }
 
-        if (!user.getFilmsLikes().contains(id)) {
-            user.deleteLike(id);
-            film.deleteLike();
-        }
+    public List<Film> getPopular(int n) {
+        return filmDao.getPopular(n);
+    }
 
+    public void addLike(Integer filmId, Integer userId) {
+        filmLikeDao.addLike(filmId, userId);
+    }
+
+    public void deleteLike(Integer filmId, Integer userId) {
+        filmLikeDao.deleteLike(filmId, userId);
     }
 
 }
